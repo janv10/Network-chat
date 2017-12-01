@@ -1,7 +1,10 @@
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.DefaultCaret;
+
 import java.awt.GridBagLayout;
 import javax.swing.JTextArea;
 import javax.swing.KeyStroke;
@@ -27,7 +30,8 @@ public class ClientChatWindow extends JFrame {
 	private String name, address; 
 	private int port; 
 	private JTextField sendMessageField;
-	private JTextArea txtrChathistory;
+	private JTextArea chatHistory;
+	private DefaultCaret updateCaret;
 
 	/**
 	 * Window for clientChat
@@ -115,17 +119,18 @@ public class ClientChatWindow extends JFrame {
 		gbl_contentPane.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
-		txtrChathistory = new JTextArea();
-		
-		txtrChathistory.setEditable(false);		//make chat history window not editable 
-		GridBagConstraints gbc_txtrChathistory = new GridBagConstraints();
-		gbc_txtrChathistory.insets = new Insets(0, 0, 5, 5);
-		gbc_txtrChathistory.fill = GridBagConstraints.BOTH;
-		gbc_txtrChathistory.gridx = 1;
-		gbc_txtrChathistory.gridy = 1;
-		gbc_txtrChathistory.gridwidth = 2; 
-		gbc_txtrChathistory.insets = new Insets(10, 5, 0, 0);
-		contentPane.add(txtrChathistory, gbc_txtrChathistory);
+		//Move text area in to the scroll pane to make it scroll-able 
+		chatHistory = new JTextArea();
+		chatHistory.setEditable(false);		//make chat history window not editable 
+		JScrollPane scroll = new JScrollPane(chatHistory);		//allow chat history to be scrollable 
+		GridBagConstraints scrollConstraits = new GridBagConstraints();
+		scrollConstraits.insets = new Insets(0, 0, 5, 5);
+		scrollConstraits.fill = GridBagConstraints.BOTH;
+		scrollConstraits.gridx = 1;
+		scrollConstraits.gridy = 1;
+		scrollConstraits.gridwidth = 2; 
+		scrollConstraits.insets = new Insets(10, 5, 0, 0);
+		contentPane.add(scroll, scrollConstraits);
 		
 		
 		
@@ -172,6 +177,9 @@ public class ClientChatWindow extends JFrame {
 		//Empty messages are not printed 
 		if (message.equals("")) return; 
 		
+		//User name to be printed with the message 
+		message = name + ": " + message; 
+		
 		//Message to the chat window 
 		reportConsole(message);
 		
@@ -181,7 +189,11 @@ public class ClientChatWindow extends JFrame {
 	}
 	
 	public void reportConsole(String message) {
-		txtrChathistory.append(message + "\n\r");
+		chatHistory.append(message + "\n\r");
+
+		//Update where the current chat is so scroll panel starts at the bottom when new typed message comes 
+		chatHistory.setCaretPosition(chatHistory.getDocument().getLength());
+		
 		
 	}
 }
