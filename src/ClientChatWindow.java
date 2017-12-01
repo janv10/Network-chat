@@ -17,6 +17,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import java.awt.Insets;
 import javax.swing.JTextField;
+import java.awt.event.KeyAdapter;
 
 public class ClientChatWindow extends JFrame {
 
@@ -37,7 +38,7 @@ public class ClientChatWindow extends JFrame {
 		this.address = address; 
 		this.port = port; 
 		makeWindow(); 
-		reportConsole("Attempting a connection to " + address + ", Port Number: " + port + ", User: " + name);
+		reportConsole("Attempting a connection to: " + address + ", Port Number: " + port + ", User: " + name);
 
 
 	
@@ -126,15 +127,20 @@ public class ClientChatWindow extends JFrame {
 		gbc_txtrChathistory.insets = new Insets(10, 5, 0, 0);
 		contentPane.add(txtrChathistory, gbc_txtrChathistory);
 		
-		JButton btnNewButton = new JButton("Send");
-
 		
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
 		
 		sendMessageField = new JTextField();
+		
+		//Allow 'Enter' Button to be used to send messages to the chat 
+		sendMessageField.addKeyListener(new KeyAdapter() {
+			public void keyPressed(KeyEvent e) {
+				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+					send(sendMessageField.getText());
+				}
+				
+				
+			}
+		});
 		GridBagConstraints gbc_sendMessageField = new GridBagConstraints();
 		gbc_sendMessageField.insets = new Insets(0, 0, 0, 5);
 		gbc_sendMessageField.fill = GridBagConstraints.HORIZONTAL;
@@ -142,13 +148,35 @@ public class ClientChatWindow extends JFrame {
 		gbc_sendMessageField.gridy = 2;
 		contentPane.add(sendMessageField, gbc_sendMessageField);
 		sendMessageField.setColumns(10);
-		GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
-		gbc_btnNewButton.insets = new Insets(0, 0, 0, 5);
-		gbc_btnNewButton.gridx = 2;
-		gbc_btnNewButton.gridy = 2;
-		contentPane.add(btnNewButton, gbc_btnNewButton);
+		
+		JButton sendButton = new JButton("Send");
+		sendButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				send(sendMessageField.getText());
+			}
+		});
+		
+		GridBagConstraints gbc_sendButton = new GridBagConstraints();
+		gbc_sendButton.insets = new Insets(0, 0, 0, 5);
+		gbc_sendButton.gridx = 2;
+		gbc_sendButton.gridy = 2;
+		contentPane.add(sendButton, gbc_sendButton);
 		setVisible(true);
 		sendMessageField.requestFocusInWindow(); //allow text to be typed on the send message field 
+		
+	}
+	
+	private void send(String message) {
+		
+		//Empty messages are not printed 
+		if (message.equals("")) return; 
+		
+		//Message to the chat window 
+		reportConsole(message);
+		
+		//Clear the typed message from the field
+		sendMessageField.setText("");
 		
 	}
 	
