@@ -123,6 +123,8 @@ public class ClientChatWindow extends JFrame {
 		contentPane.add(txtrChathistory, gbc_txtrChathistory);
 		
 		JButton btnNewButton = new JButton("Send");
+
+		
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 			}
@@ -142,7 +144,7 @@ public class ClientChatWindow extends JFrame {
 		gbc_btnNewButton.gridy = 2;
 		contentPane.add(btnNewButton, gbc_btnNewButton);
 		setVisible(true);
-		sendMessageField.requestFocus();
+		sendMessageField.requestFocus(); //allow text to be typed on the send message field 
 		
 	}
 }
