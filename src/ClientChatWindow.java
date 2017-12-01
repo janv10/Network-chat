@@ -26,6 +26,7 @@ public class ClientChatWindow extends JFrame {
 	private String name, address; 
 	private int port; 
 	private JTextField sendMessageField;
+	private JTextArea txtrChathistory;
 
 	/**
 	 * Window for clientChat
@@ -36,6 +37,9 @@ public class ClientChatWindow extends JFrame {
 		this.address = address; 
 		this.port = port; 
 		makeWindow(); 
+		reportConsole("Attempting a connection to " + address + ", Port Number: " + port + ", User: " + name);
+
+
 	
 	}
 	
@@ -110,7 +114,7 @@ public class ClientChatWindow extends JFrame {
 		gbl_contentPane.rowWeights = new double[]{1.0, Double.MIN_VALUE};
 		contentPane.setLayout(gbl_contentPane);
 		
-		JTextArea txtrChathistory = new JTextArea();
+		txtrChathistory = new JTextArea();
 		
 		txtrChathistory.setEditable(false);		//make chat history window not editable 
 		GridBagConstraints gbc_txtrChathistory = new GridBagConstraints();
@@ -144,7 +148,12 @@ public class ClientChatWindow extends JFrame {
 		gbc_btnNewButton.gridy = 2;
 		contentPane.add(btnNewButton, gbc_btnNewButton);
 		setVisible(true);
-		sendMessageField.requestFocus(); //allow text to be typed on the send message field 
+		sendMessageField.requestFocusInWindow(); //allow text to be typed on the send message field 
+		
+	}
+	
+	public void reportConsole(String message) {
+		txtrChathistory.append(message + "\n\r");
 		
 	}
 }
