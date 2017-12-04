@@ -14,6 +14,8 @@ import java.awt.GridBagConstraints;
 import javax.swing.JMenu;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -40,6 +42,8 @@ public class ClientChatWindow extends JFrame {
 	private DatagramSocket socket; 
 	private InetAddress ip;
 	
+	private Thread send; 
+	
 
 	/**
 	 * Window for clientChat
@@ -63,9 +67,11 @@ public class ClientChatWindow extends JFrame {
 
 	}
 	
+	
+	
 	private boolean openConnection(String address, int port) {
 		try {
-			socket = new DatagramSocket();
+			socket = new DatagramSocket(port);
 			ip = InetAddress.getByName(address);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -77,6 +83,34 @@ public class ClientChatWindow extends JFrame {
 		return true; 
 	}
 
+	private String receive() {
+		
+		/* Create an array of bytes */
+		byte[] data = new byte[1024];
+		DatagramPacket packet = new DatagramPacket(data, data.length);
+		
+		/* Fill the packet with data, receive from the network*/
+		try {
+			socket.receive(packet);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		/* Store in here */
+		String message = new String(packet.getData());
+		return message; 
+	}
+	
+	private void send(byte[] data) {
+		send = new Thread("Send") {
+			public void run() {
+				//send a DatagramPacket
+				//DatagramPacket packet = new DatagramPacket(data, data.length, ); 
+				
+			}	
+		}; 
+		send.start();
+	}
 	
 	/**
 	 * Method for building Client Window
