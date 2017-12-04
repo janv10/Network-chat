@@ -41,6 +41,7 @@ public class ClientChatWindow extends JFrame {
 		this.name = name; 
 		this.address = address; 
 		this.port = port; 
+		//boolean connect = openConnection(address, port);
 		makeWindow(); 
 		reportConsole("Attempting a connection to: " + address + ", Port Number: " + port + ", User: " + name);
 
@@ -126,9 +127,10 @@ public class ClientChatWindow extends JFrame {
 		GridBagConstraints scrollConstraits = new GridBagConstraints();
 		scrollConstraits.insets = new Insets(0, 0, 5, 5);
 		scrollConstraits.fill = GridBagConstraints.BOTH;
-		scrollConstraits.gridx = 1;
-		scrollConstraits.gridy = 1;
-		scrollConstraits.gridwidth = 2; 
+		scrollConstraits.gridx = 0;
+		scrollConstraits.gridy = 0;
+		scrollConstraits.gridwidth = 3;
+		scrollConstraits.gridheight = 2;
 		scrollConstraits.insets = new Insets(10, 5, 0, 0);
 		contentPane.add(scroll, scrollConstraits);
 		
@@ -149,8 +151,9 @@ public class ClientChatWindow extends JFrame {
 		GridBagConstraints gbc_sendMessageField = new GridBagConstraints();
 		gbc_sendMessageField.insets = new Insets(0, 0, 0, 5);
 		gbc_sendMessageField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_sendMessageField.gridx = 1;
+		gbc_sendMessageField.gridx = 0;
 		gbc_sendMessageField.gridy = 2;
+		gbc_sendMessageField.gridwidth = 2;
 		contentPane.add(sendMessageField, gbc_sendMessageField);
 		sendMessageField.setColumns(10);
 		
