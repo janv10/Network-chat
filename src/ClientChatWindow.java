@@ -14,6 +14,10 @@ import java.awt.GridBagConstraints;
 import javax.swing.JMenu;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.awt.event.ActionEvent;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -32,6 +36,10 @@ public class ClientChatWindow extends JFrame {
 	private JTextField sendMessageField;
 	private JTextArea chatHistory;
 	private DefaultCaret updateCaret;
+	
+	private DatagramSocket socket; 
+	private InetAddress ip;
+	
 
 	/**
 	 * Window for clientChat
@@ -41,13 +49,34 @@ public class ClientChatWindow extends JFrame {
 		this.name = name; 
 		this.address = address; 
 		this.port = port; 
-		//boolean connect = openConnection(address, port);
+		boolean connect = openConnection(address, port);
+		
+		/* failed connection handling */
+		if (!connect) {
+			System.err.println("Connection Failed!"); 
+			reportConsole ("Connection Failed!");
+		}
+		
+		
 		makeWindow(); 
 		reportConsole("Attempting a connection to: " + address + ", Port Number: " + port + ", User: " + name);
 
-
-	
 	}
+	
+	private boolean openConnection(String address, int port) {
+		try {
+			socket = new DatagramSocket();
+			ip = InetAddress.getByName(address);
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+			return false; 
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+		
+		return true; 
+	}
+
 	
 	/**
 	 * Method for building Client Window
