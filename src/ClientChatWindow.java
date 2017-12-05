@@ -31,18 +31,20 @@ import java.awt.event.KeyAdapter;
 public class ClientChatWindow extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
 	
 	private String name, address; 
 	private int port; 
-	private JTextField sendMessageField;
+	private InetAddress ip;
+	private Thread send; 
+
+
+	private JPanel contentPane;
+	private JTextField txtMessage;
 	private JTextArea chatHistory;
 	private DefaultCaret updateCaret;
 	
 	private DatagramSocket socket; 
-	private InetAddress ip;
 	
-	private Thread send; 
 	
 
 	/**
@@ -204,13 +206,13 @@ public class ClientChatWindow extends JFrame {
 		
 		
 		
-		sendMessageField = new JTextField();
+		txtMessage = new JTextField();
 		
 		//Allow 'Enter' Button to be used to send messages to the chat 
-		sendMessageField.addKeyListener(new KeyAdapter() {
+		txtMessage.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					send(sendMessageField.getText());
+					send(txtMessage.getText());
 				}
 				
 				
@@ -222,14 +224,14 @@ public class ClientChatWindow extends JFrame {
 		gbc_sendMessageField.gridx = 0;
 		gbc_sendMessageField.gridy = 2;
 		gbc_sendMessageField.gridwidth = 2;
-		contentPane.add(sendMessageField, gbc_sendMessageField);
-		sendMessageField.setColumns(10);
+		contentPane.add(txtMessage, gbc_sendMessageField);
+		txtMessage.setColumns(10);
 		
 		JButton sendButton = new JButton("Send");
 		sendButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				send(sendMessageField.getText());
+				send(txtMessage.getText());
 			}
 		});
 		
@@ -239,7 +241,7 @@ public class ClientChatWindow extends JFrame {
 		gbc_sendButton.gridy = 2;
 		contentPane.add(sendButton, gbc_sendButton);
 		setVisible(true);
-		sendMessageField.requestFocusInWindow(); //allow text to be typed on the send message field 
+		txtMessage.requestFocusInWindow(); //allow text to be typed on the send message field 
 		
 	}
 	
@@ -257,7 +259,7 @@ public class ClientChatWindow extends JFrame {
 		send(message.getBytes()); 
 		
 		//Clear the typed message from the field
-		sendMessageField.setText("");
+		txtMessage.setText("");
 		
 	}
 	
