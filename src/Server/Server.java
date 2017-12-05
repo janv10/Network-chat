@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Server implements Runnable {
 	
@@ -75,7 +77,10 @@ public class Server implements Runnable {
 		String string = new String(packet.getData());
 
 		if (string.startsWith("/c/")) {
-			clients.add( new ServerClient(string.substring(3, string.length()), packet.getAddress(), packet.getPort(), 50));
+			//UUID id = UUID.randomUUID();		//generate a random unique identifier for the client 
+			int id = UniqueIdentifier.getIdentifier(); 
+			System.out.println(id);
+			clients.add( new ServerClient(string.substring(3, string.length()), packet.getAddress(), packet.getPort(), id));
 			System.out.println(string.substring(3, string.length()));
 		}
 		else {

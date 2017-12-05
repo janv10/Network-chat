@@ -4,10 +4,10 @@ import java.net.InetAddress;
 
 public class ServerClient {
 	
-	public String name; 
-	public InetAddress address; 
-	public int port; 
-	private final int ID; 
+	public String name; 		//Name of the user 
+	public InetAddress address; 	//Computer address
+	public int port; 			//Port number 
+	private final int ID; 	//to differentiate one client from another 
 	public int attempt = 0; 
 
 	public ServerClient(String name, InetAddress address, int port, final int ID ) {
