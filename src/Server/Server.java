@@ -58,15 +58,29 @@ public class Server implements Runnable {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
-					String string = new String(packet.getData());
-					clients.add(new ServerClient("janu", packet.getAddress(), packet.getPort(), 50));
+					
+					process(packet);
+					
+					/* For error checking */
+					clients.add(new ServerClient("Janvi", packet.getAddress(), packet.getPort(), 50));
 					System.out.println(clients.get(0).address.toString() + ":" + clients.get(0).port);
-
-					System.out.println(string);
+					//System.out.println(packet);
 				}
 			}
 		};
 		receive.start();
+	}
+	
+	private void process(DatagramPacket packet ) {
+		String string = new String(packet.getData());
+
+		if (string.startsWith("/c/")) {
+			clients.add( new ServerClient(string.substring(3, string.length()), packet.getAddress(), packet.getPort(), 50));
+			System.out.println(string.substring(3, string.length()));
+		}
+		else {
+			System.out.println(string);
+		}
 	}
 
 }
