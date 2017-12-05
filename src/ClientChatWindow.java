@@ -101,12 +101,16 @@ public class ClientChatWindow extends JFrame {
 		return message; 
 	}
 	
-	private void send(byte[] data) {
+	private void send(final byte[] data) {
 		send = new Thread("Send") {
 			public void run() {
 				//send a DatagramPacket
-				//DatagramPacket packet = new DatagramPacket(data, data.length, ); 
-				
+				DatagramPacket packet = new DatagramPacket(data, data.length, ip, port ); 
+				try {
+					socket.send(packet);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}	
 		}; 
 		send.start();
