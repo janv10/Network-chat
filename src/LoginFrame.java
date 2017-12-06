@@ -168,7 +168,7 @@ public class LoginFrame extends JFrame {
 		// Print for error checking
 		// System.out.println(name + "," + address + "," + port);
 
-		new ClientChatWindow(name, address, port);
+		new ClientWindow(name, address, port);
 
 	}
 }
