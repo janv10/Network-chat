@@ -23,21 +23,21 @@ public class OnlineUsers extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[] { 0, 0 };
-		gbl_contentPane.rowHeights = new int[] { 0, 0 };
-		gbl_contentPane.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
-		gbl_contentPane.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
-		contentPane.setLayout(gbl_contentPane);
+		GridBagLayout gridLayoutContentPane = new GridBagLayout();
+		gridLayoutContentPane.columnWidths = new int[] { 0, 0 };
+		gridLayoutContentPane.rowHeights = new int[] { 0, 0 };
+		gridLayoutContentPane.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
+		gridLayoutContentPane.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
+		contentPane.setLayout(gridLayoutContentPane);
 
 		list = new JList();
-		GridBagConstraints gbc_list = new GridBagConstraints();
-		gbc_list.fill = GridBagConstraints.BOTH;
-		gbc_list.gridx = 0;
-		gbc_list.gridy = 0;
+		GridBagConstraints gridList = new GridBagConstraints();
+		gridList.fill = GridBagConstraints.BOTH;
+		gridList.gridx = 0;
+		gridList.gridy = 0;
 		JScrollPane p = new JScrollPane();
 		p.setViewportView(list);
-		contentPane.add(p, gbc_list);
+		contentPane.add(p, gridList);
 		list.setFont(new Font("Verdana", 0, 24));
 	}
 

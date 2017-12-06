@@ -42,7 +42,7 @@ public class ClientWindow extends JFrame implements Runnable {
 	private OnlineUsers users;
 
 	public ClientWindow(String name, String address, int port) {
-		setTitle("Cherno Chat Client");
+		setTitle("Network Chat Login");
 		client = new Client(name, address, port);
 		boolean connect = client.openConnection(address);
 		if (!connect) {
