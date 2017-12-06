@@ -107,6 +107,11 @@ public class Server implements Runnable {
 		
 	}
 	
+	private void send(String message, InetAddress address, int port) {
+		message += "/e/";
+		send(message.getBytes(), address, port);
+	}
+	
 	private void process(DatagramPacket packet ) {
 		String string = new String(packet.getData());
 
@@ -116,6 +121,12 @@ public class Server implements Runnable {
 			System.out.println("Identifier " + id);
 			clients.add( new ServerClient(string.substring(3, string.length()), packet.getAddress(), packet.getPort(), id));
 			System.out.println(string.substring(3, string.length()));
+			
+			String ID = "/c/" + id;
+			
+			//Send it back to the client
+			send(ID, packet.getAddress(), packet.getPort()); 
+			
 		}
 		else if (string.startsWith("/m/")){
 			sendToAll(string);

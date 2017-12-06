@@ -1,10 +1,14 @@
+/**
+ * Handle network side of the chat 
+ */
+
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
-
 
 
 public class Client {
@@ -16,6 +20,8 @@ public class Client {
 	private InetAddress ip;
 	private Thread send; 
 	private DatagramSocket socket; 
+	private int ID = -1; 
+
 	
 	public Client(String name, String address, int port ) {
 		this.name = name; 
@@ -64,6 +70,7 @@ public class Client {
 		
 		/* Store in here */
 		String message = new String(packet.getData());
+		
 		return message; 
 	}
 	
@@ -80,6 +87,16 @@ public class Client {
 			}	
 		}; 
 		send.start();
+	}
+
+	public void setID(int ID) {
+		this.ID = ID; 
+		
+	}
+	
+	public int getID() {
+		return ID; 
+		
 	}
 	
 	

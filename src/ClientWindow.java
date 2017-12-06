@@ -1,3 +1,7 @@
+/**
+ * Handle GUI side of the client 
+ */
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -21,13 +25,15 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultCaret;
 
-public class ClientWindow extends JFrame {
+public class ClientWindow extends JFrame implements Runnable {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField txtMessage;
 	private JTextArea chatHistory;
 	private DefaultCaret updateCaret;
+	private Thread run, listen; 
+	private boolean running = false; 
 	
 	private Client client; 
 	
@@ -52,6 +58,9 @@ public class ClientWindow extends JFrame {
 		reportConsole("Attempting a connection to: " + address + ", Port Number: " + port + ", User: " + name);
 		String connection = "/c/" + name; 
 		client.send(connection.getBytes()); 
+		running = true;
+		run = new Thread(this, "Running Thread"); 
+		run.start(); 
 	}
 	
 
@@ -181,6 +190,10 @@ public class ClientWindow extends JFrame {
 		
 	}
 	
+	public void run() {
+		listen(); 	
+	}
+	
 	private void send(String message) {
 		
 		//Empty messages are not printed 
@@ -198,6 +211,26 @@ public class ClientWindow extends JFrame {
 		
 		//Clear the typed message from the field
 		txtMessage.setText("");
+		
+	}
+
+	/**
+	 * Attempt a connection and send the packet to the send method above 
+	 */
+	public void listen() {
+		listen = new Thread("Listen"){
+			public void run() {
+				while (running) {
+				String message = client.receive();
+				if (message.startsWith("/c/")) {
+					client.setID(Integer.parseInt(message.split("/c/|/e/")[1]));
+					reportConsole ("Successfully Connected to the Server!" + "Your unique ID: "+ client.getID());
+				}
+				}
+			}
+		}; 
+		
+		listen.start();
 		
 	}
 	
