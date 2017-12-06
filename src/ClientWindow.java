@@ -1,6 +1,3 @@
-/**
- * Handle GUI side of the client 
- */
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -9,239 +6,199 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultCaret;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 
 public class ClientWindow extends JFrame implements Runnable {
-
 	private static final long serialVersionUID = 1L;
+
 	private JPanel contentPane;
 	private JTextField txtMessage;
-	private JTextArea chatHistory;
-	private DefaultCaret updateCaret;
-	private Thread run, listen; 
-	private boolean running = false; 
-	
-	private Client client; 
-	
-	/**
-	 * Window for clientChat
-	 */
-	public ClientWindow(String name, String address, int port) {
-		setTitle("Client Chat ");
-		
-		client = new Client(name, address, port);
-		
-		boolean connect = client.openConnection(address);
-		
-		/* failed connection handling */
-		if (!connect) {
-			System.err.println("Connection Failed!"); 
-			reportConsole ("Connection Failed!");
-		}
-		
-		
-		makeWindow(); 
-		reportConsole("Attempting a connection to: " + address + ", Port Number: " + port + ", User: " + name);
-		String connection = "/c/" + name; 
-		client.send(connection.getBytes()); 
-		running = true;
-		run = new Thread(this, "Running Thread"); 
-		run.start(); 
-	}
-	
+	private JTextArea history;
+	private DefaultCaret caret;
+	private Thread run, listen;
+	private Client client;
 
-	/**
-	 * Method for building Client Window
-	 */
-	private void makeWindow() {
-		/**
-		 * Set look and feel of the system as native application to the system of the
-		 * platform
-		 */
+	private boolean running = false;
+	private JMenuBar menuBar;
+	private JMenu mnFile;
+	private JMenuItem mntmOnlineUsers;
+	private JMenuItem mntmExit;
+
+	private OnlineUsers users;
+
+	public ClientWindow(String name, String address, int port) {
+		setTitle("Cherno Chat Client");
+		client = new Client(name, address, port);
+		boolean connect = client.openConnection(address);
+		if (!connect) {
+			System.err.println("Connection failed!");
+			console("Connection failed!");
+		}
+		createWindow();
+		console("Attempting a connection to " + address + ":" + port + ", user: " + name);
+		String connection = "/c/" + name + "/e/";
+		client.send(connection.getBytes());
+		users = new OnlineUsers();
+		running = true;
+		run = new Thread(this, "Running");
+		run.start();
+	}
+
+	private void createWindow() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (Exception e1) {
+			e1.printStackTrace();
 		}
-		
-		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(880,550);
-		setLocationRelativeTo(null);		//center the window
-		
-		JMenuBar menuBar = new JMenuBar();
+		setSize(880, 550);
+		setLocationRelativeTo(null);
+
+		menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
-		
-		JMenu aboutMenu = new JMenu("About");
-		menuBar.add(aboutMenu);
-		
-		JMenuItem aboutAuthors = new JMenuItem("About Authors");
-		aboutAuthors.addActionListener(new ActionListener() {
+
+		mnFile = new JMenu("File");
+		menuBar.add(mnFile);
+
+		mntmOnlineUsers = new JMenuItem("Online Users");
+		mntmOnlineUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "Authors of Networked Chat:\nJahnvi Patel (jpate201)\nPatrick O'Connell (oconne16)\nDeep Mehta (dmehta22)");
+				users.setVisible(true);
 			}
 		});
-		aboutMenu.add(aboutAuthors);
-		
-		JMenu helpMenu = new JMenu("Help");
-		menuBar.add(helpMenu);
-		
-		JMenuItem helpToChat = new JMenuItem("How to Chat");
-		helpToChat.addActionListener(new ActionListener() {	
-					public void actionPerformed(ActionEvent e) {
-						JOptionPane.showMessageDialog(null, "How to Chat:");
-				
-			}
-		});
-		helpMenu.add(helpToChat);
-		
-		JMenu exitMenu = new JMenu("Exit");
-		menuBar.add(exitMenu);
-		
-		JMenuItem clientQuit = new JMenuItem("Quit");
-		clientQuit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
-		clientQuit.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		});
-		exitMenu.add(clientQuit);
-		
-		
+		mnFile.add(mntmOnlineUsers);
+
+		mntmExit = new JMenuItem("Exit");
+		mnFile.add(mntmExit);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		
-		
-		//Add Grigbag layout for the chat messages 
+
 		GridBagLayout gbl_contentPane = new GridBagLayout();
-		gbl_contentPane.columnWidths = new int[]{28, 815, 30, 7};
-		gbl_contentPane.rowHeights = new int[]{35, 475, 40};
-		gbl_contentPane.columnWeights = new double[]{1.0, 1.0};
-		gbl_contentPane.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_contentPane.columnWidths = new int[] { 28, 815, 30, 7 }; // SUM = 880
+		gbl_contentPane.rowHeights = new int[] { 25, 485, 40 }; // SUM = 550
 		contentPane.setLayout(gbl_contentPane);
-		
-		//Move text area in to the scroll pane to make it scroll-able 
-		chatHistory = new JTextArea();
-		chatHistory.setEditable(false);		//make chat history window not editable 
-		JScrollPane scroll = new JScrollPane(chatHistory);		//allow chat history to be scroll-able 
-		GridBagConstraints scrollConstraits = new GridBagConstraints();
-		scrollConstraits.insets = new Insets(0, 0, 5, 5);
-		scrollConstraits.fill = GridBagConstraints.BOTH;
-		scrollConstraits.gridx = 0;
-		scrollConstraits.gridy = 0;
-		scrollConstraits.gridwidth = 3;
-		scrollConstraits.gridheight = 2;
-		scrollConstraits.insets = new Insets(10, 5, 0, 0);
-		contentPane.add(scroll, scrollConstraits);
-		
-		
-		
+
+		history = new JTextArea();
+		history.setEditable(false);
+		JScrollPane scroll = new JScrollPane(history);
+		caret = (DefaultCaret) history.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
+		GridBagConstraints scrollConstraints = new GridBagConstraints();
+		scrollConstraints.insets = new Insets(0, 0, 5, 5);
+		scrollConstraints.fill = GridBagConstraints.BOTH;
+		scrollConstraints.gridx = 0;
+		scrollConstraints.gridy = 0;
+		scrollConstraints.gridwidth = 3;
+		scrollConstraints.gridheight = 2;
+		scrollConstraints.weightx = 1;
+		scrollConstraints.weighty = 1;
+		scrollConstraints.insets = new Insets(0, 5, 0, 0);
+		contentPane.add(scroll, scrollConstraints);
+
 		txtMessage = new JTextField();
-		
-		//Allow 'Enter' Button to be used to send messages to the chat 
 		txtMessage.addKeyListener(new KeyAdapter() {
 			public void keyPressed(KeyEvent e) {
 				if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-					send(txtMessage.getText());
+					send(txtMessage.getText(), true);
 				}
-				
-				
 			}
 		});
-		GridBagConstraints gbc_sendMessageField = new GridBagConstraints();
-		gbc_sendMessageField.insets = new Insets(0, 0, 0, 5);
-		gbc_sendMessageField.fill = GridBagConstraints.HORIZONTAL;
-		gbc_sendMessageField.gridx = 0;
-		gbc_sendMessageField.gridy = 2;
-		gbc_sendMessageField.gridwidth = 2;
-		contentPane.add(txtMessage, gbc_sendMessageField);
+		GridBagConstraints gbc_txtMessage = new GridBagConstraints();
+		gbc_txtMessage.insets = new Insets(0, 0, 0, 5);
+		gbc_txtMessage.fill = GridBagConstraints.HORIZONTAL;
+		gbc_txtMessage.gridx = 0;
+		gbc_txtMessage.gridy = 2;
+		gbc_txtMessage.gridwidth = 2;
+		gbc_txtMessage.weightx = 1;
+		gbc_txtMessage.weighty = 0;
+		contentPane.add(txtMessage, gbc_txtMessage);
 		txtMessage.setColumns(10);
-		
-		JButton sendButton = new JButton("Send");
-		sendButton.addActionListener(new ActionListener() {
+
+		JButton btnSend = new JButton("Send");
+		btnSend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-				send(txtMessage.getText());
+				send(txtMessage.getText(), true);
 			}
 		});
-		
-		GridBagConstraints gbc_sendButton = new GridBagConstraints();
-		gbc_sendButton.insets = new Insets(0, 0, 0, 5);
-		gbc_sendButton.gridx = 2;
-		gbc_sendButton.gridy = 2;
-		contentPane.add(sendButton, gbc_sendButton);
+		GridBagConstraints gbc_btnSend = new GridBagConstraints();
+		gbc_btnSend.insets = new Insets(0, 0, 0, 5);
+		gbc_btnSend.gridx = 2;
+		gbc_btnSend.gridy = 2;
+		gbc_btnSend.weightx = 0;
+		gbc_btnSend.weighty = 0;
+		contentPane.add(btnSend, gbc_btnSend);
+
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				String disconnect = "/d/" + client.getID() + "/e/";
+				send(disconnect, false);
+				running = false;
+				client.close();
+			}
+		});
+
 		setVisible(true);
-		txtMessage.requestFocusInWindow(); //allow text to be typed on the send message field 
-		
-	}
-	
-	public void run() {
-		listen(); 	
-	}
-	
-	private void send(String message) {
-		
-		//Empty messages are not printed 
-		if (message.equals("")) return; 
-		
-		//User name to be printed with the message 
-		message = client.getName() + ": " + message; 
-		
-		//Message to the chat window 
-		reportConsole(message);
-		
-		message = "/m/" + message;
-		
-		client.send(message.getBytes()); 
-		
-		//Clear the typed message from the field
-		txtMessage.setText("");
-		
+
+		txtMessage.requestFocusInWindow();
 	}
 
-	/**
-	 * Attempt a connection and send the packet to the send method above 
-	 */
+	public void run() {
+		listen();
+	}
+
+	private void send(String message, boolean text) {
+		if (message.equals("")) return;
+		if (text) {
+			message = client.getName() + ": " + message;
+			message = "/m/" + message + "/e/";
+			txtMessage.setText("");
+		}
+		client.send(message.getBytes());
+	}
+
 	public void listen() {
-		listen = new Thread("Listen"){
+		listen = new Thread("Listen") {
 			public void run() {
 				while (running) {
-				String message = client.receive();
-				if (message.startsWith("/c/")) {
-					client.setID(Integer.parseInt(message.split("/c/|/e/")[1]));
-					reportConsole ("Successfully Connected to the Server!" + "Your unique ID: "+ client.getID());
-				}
+					String message = client.receive();
+					if (message.startsWith("/c/")) {
+						client.setID(Integer.parseInt(message.split("/c/|/e/")[1]));
+						console("Successfully connected to server! ID: " + client.getID());
+					} else if (message.startsWith("/m/")) {
+						String text = message.substring(3);
+						text = text.split("/e/")[0];
+						console(text);
+					} else if (message.startsWith("/i/")) {
+						String text = "/i/" + client.getID() + "/e/";
+						send(text, false);
+					} else if (message.startsWith("/u/")) {
+						String[] u = message.split("/u/|/n/|/e/");
+						users.update(Arrays.copyOfRange(u, 1, u.length - 1));
+					}
 				}
 			}
-		}; 
-		
+		};
 		listen.start();
-		
 	}
-	
-	public void reportConsole(String message) {
-		chatHistory.append(message + "\n\r");
 
-		//Update where the current chat is so scroll panel starts at the bottom when new typed message comes 
-		chatHistory.setCaretPosition(chatHistory.getDocument().getLength());
-		
-		
+	public void console(String message) {
+		history.append(message + "\n\r");
+		history.setCaretPosition(history.getDocument().getLength());
 	}
-	
-
 }
