@@ -7,7 +7,7 @@ import java.net.UnknownHostException;
 
 
 
-public class ClientChatWindow {
+public class Client {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -17,7 +17,7 @@ public class ClientChatWindow {
 	private Thread send; 
 	private DatagramSocket socket; 
 	
-	public ClientChatWindow(String name, String address, int port ) {
+	public Client(String name, String address, int port ) {
 		this.name = name; 
 		this.address = address; 
 		this.port = port; 

@@ -29,7 +29,7 @@ public class ClientWindow extends JFrame {
 	private JTextArea chatHistory;
 	private DefaultCaret updateCaret;
 	
-	private ClientChatWindow client; 
+	private Client client; 
 	
 	/**
 	 * Window for clientChat
@@ -37,7 +37,7 @@ public class ClientWindow extends JFrame {
 	public ClientWindow(String name, String address, int port) {
 		setTitle("Client Chat ");
 		
-		client = new ClientChatWindow(name, address, port);
+		client = new Client(name, address, port);
 		
 		boolean connect = client.openConnection(address);
 		
