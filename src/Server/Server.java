@@ -6,8 +6,10 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Server implements Runnable {
@@ -22,27 +24,117 @@ public class Server implements Runnable {
 	private final int MAX_ATTEMPTS = 5;
 
 	private boolean raw = false;
+	
+	/*
 	private BigInteger p = new BigInteger("1147714873");
 	private BigInteger q = new BigInteger("640125991");
 	private BigInteger n = p.multiply(q);
 	private BigInteger phi = new BigInteger("734682118676723280");
 	private BigInteger exp = new BigInteger("13");
-	private BigInteger decrypt = new BigInteger("395598063902850997");
-	/*
-	 * hello 104 101 108 108 111 messageAscii ^ e mod n -> cypher 104101108108111^13
-	 * mod 734682120464564143 = 327853684713202128
-	 * 
-	 * 327853684713202128 ----cypher message
-	 * 
-	 * To decipher
-	 * 
-	 * cypher^d mod n
-	 * 
-	 * 327853684713202128^395598063902850997 mod 734682120464564143
-	 * 
-	 * =104 101 108 108 111
-	 */
+	private BigInteger dec = new BigInteger("395598063902850997");
+	
+	*/
+	int BIT_LENGTH = 256;
 
+	// Generate random primes
+	Random rand = new SecureRandom();
+
+	/*
+	
+	private BigInteger p = new BigInteger("61515713759448956718224427239234819678807298860503807478747734036937189372339");
+	private BigInteger q = new BigInteger("55442513974044353044574467937747871965915026620748625359014933606491729226307");
+	private BigInteger n = p.multiply(q);
+	private BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
+	private BigInteger exp = new BigInteger("1111111111111");
+	private BigInteger one = new BigInteger("-1");
+	public BigInteger dec = exp.modPow(one, phi);
+	*/
+
+
+	
+	private BigInteger p = new BigInteger(BIT_LENGTH / 2, 100, rand);
+	private BigInteger q = new BigInteger(BIT_LENGTH / 2, 100, rand);
+	private BigInteger n = p.multiply(q);
+	private BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
+	private BigInteger exp = new BigInteger("1111111111111");
+	private BigInteger one = new BigInteger("-1");
+	public BigInteger dec = exp.modPow(one, phi);
+	//decrypt = decrypt.mod(n);
+	
+
+	/*
+	 hello
+104 101 108 108 111
+messageAscii ^ e mod n -> cypher
+104101108108111^13 mod 734682120464564143 = 327853684713202128
+
+327853684713202128 ----cypher message
+
+To decipher
+
+cypher^d mod n
+
+327853684713202128^395598063902850997 mod 734682120464564143
+
+=104 101 108 108 111
+	 */
+	public String RSAdecryption(String sometext) {
+		BigInteger solveMe = new BigInteger(sometext);
+		BigInteger solved = solveMe.modPow(dec, n);
+		String answer = solved.toString();
+		StringBuilder answerString = new StringBuilder();
+		String finalSolution;
+		int stringLength = answer.length();
+		char a, b, c;
+		int A, B, C;
+		int character;
+		int aChar;
+		char print;
+ 		for (int i = 0; i+2 < stringLength; i+=3) {
+			a = answer.charAt(i);
+			b = answer.charAt(i+1);
+			c = answer.charAt(i+2);
+			A = Character.getNumericValue(a);
+			B = Character.getNumericValue(b);
+			C = Character.getNumericValue(c);
+			character = C + (10*B) + (100*A);
+			character -= 100;
+			print = (char) character;
+			System.out.println(print);
+			answerString.append(print);
+		}
+		finalSolution = answerString.toString();
+		System.out.println("Final answer:" + finalSolution);
+		return finalSolution;
+	}
+	
+	public String RSAencryption(String sometext) {
+		/**System.out.println("p: " +  p);
+		System.out.println("q: " +  q);
+		System.out.println("n: " +  n);
+		
+		System.out.println("phi: " +  phi);
+		System.out.println("decrpty: " +  dec);
+		**/
+		System.out.println("In patricks encrpytion, string being encrypted: " + sometext);
+		int characterVal;
+	    StringBuilder newString = new StringBuilder();
+	    for (char c : sometext.toCharArray()) {
+	    	characterVal = (int) c;
+	    	characterVal += 100;
+	    	if (characterVal != 100) {
+	    		newString.append(characterVal);
+	    	}
+	    }
+	    BigInteger message = new BigInteger(newString.toString());
+	    System.out.println("Encrpyted message is: " + message);
+		BigInteger raised = message.modPow(exp,n);
+		System.out.println("Encrpyted message is: " + raised);
+		String ret = raised.toString();
+		System.out.println("Encrpyted message is in string is: " + ret);
+		return ret;
+	}
+	
 	public Server(int port) {
 		this.port = port;
 		try {
@@ -215,6 +307,11 @@ public class Server implements Runnable {
 			String text = message.substring(3);
 			text = text.split("/e/")[0];
 			System.out.println(message);
+			String hi = RSAencryption(text);
+			System.out.println(hi);
+			String hi2 = RSAdecryption(hi);
+			System.out.println(hi2);
+			
 		}
 		for (int i = 0; i < clients.size(); i++) {
 			ServerClient client = clients.get(i);
