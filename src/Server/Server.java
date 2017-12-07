@@ -1,6 +1,7 @@
 package Server; 
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -21,7 +22,29 @@ public class Server implements Runnable {
 	private final int MAX_ATTEMPTS = 5;
 
 	private boolean raw = false;
+	private BigInteger p = new BigInteger("1147714873");
+	private BigInteger q = new BigInteger("640125991");
+	private BigInteger n = p.multiply(q);
+	private BigInteger phi = new BigInteger("734682118676723280");
+	private BigInteger exp = new BigInteger("13");
+	private BigInteger decrypt = new BigInteger("395598063902850997");
+	/*
+	 hello
+104 101 108 108 111
+messageAscii ^ e mod n -> cypher
+104101108108111^13 mod 734682120464564143 = 327853684713202128
 
+327853684713202128 ----cypher message
+
+To decipher
+
+cypher^d mod n
+
+327853684713202128^395598063902850997 mod 734682120464564143
+
+=104 101 108 108 111
+	 */
+	
 	public Server(int port) {
 		this.port = port;
 		try {
