@@ -29,9 +29,8 @@ public class LoginFrame extends JFrame {
 	private JLabel lblPort;
 	private JLabel lblAddressDesc;
 	private JLabel lblPortDesc;
-	private JMenu about; 
+	private JMenu about;
 	private JMenuItem aboutAuthors;
-	
 
 	public LoginFrame() {
 		try {
@@ -85,7 +84,7 @@ public class LoginFrame extends JFrame {
 		contentPane.add(lblPortDesc);
 
 		JButton btnLogin = new JButton("Login");
-		
+
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String name = txtName.getText();
@@ -93,15 +92,13 @@ public class LoginFrame extends JFrame {
 				int port = Integer.parseInt(txtPort.getText());
 				login(name, address, port);
 			}
-			
-			
+
 		});
 		btnLogin.setBounds(125, 408, 200, 35);
 		contentPane.add(btnLogin);
-		
+
 		/**
-		 * Add a MenuBar for the the Login Window
-		 * 	with a About, Help and Exit 
+		 * Add a MenuBar for the the Login Window with a About, Help and Exit
 		 */
 		JMenuBar loginMenuBar = new JMenuBar();
 		loginMenuBar.setBounds(0, 0, 474, 22);
@@ -109,20 +106,21 @@ public class LoginFrame extends JFrame {
 
 		about = new JMenu("About");
 		loginMenuBar.add(about);
-		
+
 		aboutAuthors = new JMenuItem("About Authors");
 		aboutAuthors.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_A, ActionEvent.CTRL_MASK));
 		about.add(aboutAuthors);
 		aboutAuthors.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, "Authors of Networked Chat:\nJahnvi Patel (jpate201)\nPatrick O'Connell (oconne16)\nDeep Mehta (dmehta22)");
+				JOptionPane.showMessageDialog(null,
+						"Authors of Networked Chat:\nJahnvi Patel (jpate201)\nPatrick O'Connell (oconne16)\nDeep Mehta (dmehta22)");
 			}
 		});
-		
+
 		JMenu help = new JMenu("Help");
 		loginMenuBar.add(help);
-		
-		/*Provide help with connection*/
+
+		/* Provide help with connection */
 		JMenuItem helpNetworkedChat = new JMenuItem("How to Connect");
 		help.add(helpNetworkedChat);
 		helpNetworkedChat.addActionListener(new ActionListener() {
@@ -130,8 +128,7 @@ public class LoginFrame extends JFrame {
 				JOptionPane.showMessageDialog(null, "How to Connect:");
 			}
 		});
-		
-		
+
 		JMenu exit = new JMenu("Exit");
 		loginMenuBar.add(exit);
 		JMenuItem quitGame = new JMenuItem("Quit");
@@ -142,8 +139,7 @@ public class LoginFrame extends JFrame {
 				System.exit(0);
 			}
 		});
-		
-		
+
 	}
 
 	private void login(String name, String address, int port) {

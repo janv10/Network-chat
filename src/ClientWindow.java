@@ -38,19 +38,26 @@ public class ClientWindow extends JFrame implements Runnable {
 	private JMenu mnFile;
 	private JMenuItem mntmOnlineUsers;
 	private JMenuItem mntmExit;
-
 	private OnlineUsers users;
 
 	public ClientWindow(String name, String address, int port) {
-		setTitle("Network Chat Login");
+		
 		client = new Client(name, address, port);
 		boolean connect = client.openConnection(address);
+		
+		//If system fails to connect - print an error message 
 		if (!connect) {
 			System.err.println("Connection failed!");
 			console("Connection failed!");
 		}
 		createWindow();
-		console("Attempting a connection to " + address + ":" + port + ", user: " + name);
+		
+		console("Attempting a connection to " + address + ":" + port + ", User: " + name);
+		
+		//Display name of the current user on their chat window 
+		setTitle("Chat Window - " + name);
+		
+		
 		String connection = "/c/" + name + "/e/";
 		client.send(connection.getBytes());
 		users = new OnlineUsers();
