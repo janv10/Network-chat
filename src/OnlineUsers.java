@@ -8,12 +8,13 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
+import java.awt.Color;
 
 public class OnlineUsers extends JFrame {
 	private static final long serialVersionUID = 1L;
 
 	private JPanel contentPane;
-	private JList list;
+	private JList<Object> list;
 
 	public OnlineUsers() {
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -21,6 +22,8 @@ public class OnlineUsers extends JFrame {
 		setTitle("Online Users");
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
+		contentPane.setBackground(new Color(238, 238, 238));
+		contentPane.setForeground(new Color(255, 255, 102));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		GridBagLayout gridLayoutContentPane = new GridBagLayout();
@@ -30,7 +33,7 @@ public class OnlineUsers extends JFrame {
 		gridLayoutContentPane.rowWeights = new double[] { 1.0, Double.MIN_VALUE };
 		contentPane.setLayout(gridLayoutContentPane);
 
-		list = new JList();
+		list = new JList<Object>();
 		GridBagConstraints gridList = new GridBagConstraints();
 		gridList.fill = GridBagConstraints.BOTH;
 		gridList.gridx = 0;
@@ -38,7 +41,7 @@ public class OnlineUsers extends JFrame {
 		JScrollPane p = new JScrollPane();
 		p.setViewportView(list);
 		contentPane.add(p, gridList);
-		list.setFont(new Font("Verdana", 0, 14));
+		list.setFont(new Font("Helvetica", 0, 14));
 	}
 
 	public void update(String[] users) {

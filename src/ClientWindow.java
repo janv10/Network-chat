@@ -1,4 +1,5 @@
 
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -40,6 +41,9 @@ public class ClientWindow extends JFrame implements Runnable {
 	private JMenuItem mntmOnlineUsers;
 	private JMenuItem mntmExit;
 	private OnlineUsers users;
+	
+	private Color blue  = new Color (33, 150, 243);
+
 
 	public ClientWindow(String name, String address, int port) {
 		
@@ -152,6 +156,9 @@ public class ClientWindow extends JFrame implements Runnable {
 			}
 		});
 		GridBagConstraints gbc_btnSend = new GridBagConstraints();
+		btnSend.setBackground(blue); 
+		btnSend.setBorderPainted(false);
+		btnSend.setOpaque(true);
 		gbc_btnSend.insets = new Insets(0, 0, 0, 5);
 		gbc_btnSend.gridx = 2;
 		gbc_btnSend.gridy = 2;

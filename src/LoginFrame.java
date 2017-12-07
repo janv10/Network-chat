@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,6 +19,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import java.awt.event.KeyAdapter;
 
+
 public class LoginFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 
@@ -31,13 +33,20 @@ public class LoginFrame extends JFrame {
 	private JLabel lblPortDesc;
 	private JMenu about;
 	private JMenuItem aboutAuthors;
+	
+	private Color blue  = new Color (33, 150, 243);
 
 	public LoginFrame() {
+		
+		/**
+		 * Allow the login window to "look and feel" the same across different operating systems
+		 */
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}
+		
 		setResizable(false);
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -95,6 +104,9 @@ public class LoginFrame extends JFrame {
 
 		});
 		btnLogin.setBounds(125, 408, 200, 35);
+		btnLogin.setBackground(blue); 
+		btnLogin.setBorderPainted(false);
+		btnLogin.setOpaque(true);
 		contentPane.add(btnLogin);
 
 		/**
@@ -129,6 +141,7 @@ public class LoginFrame extends JFrame {
 			}
 		});
 
+		/* Exit and quit */
 		JMenu exit = new JMenu("Exit");
 		loginMenuBar.add(exit);
 		JMenuItem quitGame = new JMenuItem("Quit");
