@@ -136,6 +136,7 @@ public class LoginFrame extends JFrame {
 		exit.add(quitGame);
 		quitGame.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				System.exit(0);
 			}
 		});

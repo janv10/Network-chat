@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultCaret;
@@ -52,11 +53,10 @@ public class ClientWindow extends JFrame implements Runnable {
 		}
 		createWindow();
 		
-		console("Attempting a connection to " + address + ":" + port + ", User: " + name);
+		console("Attempting a connection to address: " + address + " Port Number: " + port + ", User: " + name);
 		
 		//Display name of the current user on their chat window 
 		setTitle("Chat Window - " + name);
-		
 		
 		String connection = "/c/" + name + "/e/";
 		client.send(connection.getBytes());
@@ -91,7 +91,15 @@ public class ClientWindow extends JFrame implements Runnable {
 		mnFile.add(mntmOnlineUsers);
 
 		mntmExit = new JMenuItem("Exit");
+		mntmExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				running = false;
+				System.exit(0);
+			}
+		});
 		mnFile.add(mntmExit);
+		
+		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -186,7 +194,7 @@ public class ClientWindow extends JFrame implements Runnable {
 					String message = client.receive();
 					if (message.startsWith("/c/")) {
 						client.setID(Integer.parseInt(message.split("/c/|/e/")[1]));
-						console("Successfully connected to server! ID: " + client.getID());
+						console("Successfully connected to server! Unique Client ID: " + client.getID());
 					} else if (message.startsWith("/m/")) {
 						String text = message.substring(3);
 						text = text.split("/e/")[0];
