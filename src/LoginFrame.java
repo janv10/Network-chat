@@ -28,9 +28,9 @@ public class LoginFrame extends JFrame {
 	private JTextField txtAddress;
 	private JTextField txtPort;
 	private JLabel lblIpAddress;
-	private JLabel lblPort;
-	private JLabel lblAddressDesc;
-	private JLabel lblPortDesc;
+	private JLabel portLabel;
+	private JLabel addressLabelDesc;
+	private JLabel portLabelDesc;
 	private JMenu about;
 	private JMenuItem aboutAuthors;
 	
@@ -47,7 +47,7 @@ public class LoginFrame extends JFrame {
 			e1.printStackTrace();
 		}
 		
-		setResizable(false);
+		setResizable(false); 		//Set the login window not re-sizable 
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(450, 480);
@@ -80,21 +80,21 @@ public class LoginFrame extends JFrame {
 		txtPort.setBounds(142, 191, 165, 28);
 		contentPane.add(txtPort);
 
-		lblPort = new JLabel("Port:");
-		lblPort.setBounds(208, 171, 34, 16);
-		contentPane.add(lblPort);
+		portLabel = new JLabel("Port:");
+		portLabel.setBounds(208, 171, 34, 16);
+		contentPane.add(portLabel);
 
-		lblAddressDesc = new JLabel("(eg. 192.168.0.2)");
-		lblAddressDesc.setBounds(169, 142, 112, 16);
-		contentPane.add(lblAddressDesc);
+		addressLabelDesc = new JLabel("(eg. 192.168.0.0)");
+		addressLabelDesc.setBounds(169, 142, 112, 16);
+		contentPane.add(addressLabelDesc);
 
-		lblPortDesc = new JLabel("(eg. 1013)");
-		lblPortDesc.setBounds(191, 218, 68, 16);
-		contentPane.add(lblPortDesc);
+		portLabelDesc = new JLabel("(eg. 1013)");
+		portLabelDesc.setBounds(191, 218, 68, 16);
+		contentPane.add(portLabelDesc);
 
-		JButton btnLogin = new JButton("Login");
+		JButton loginButton = new JButton("Login");
 
-		btnLogin.addActionListener(new ActionListener() {
+		loginButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String name = txtName.getText();
 				String address = txtAddress.getText();
@@ -103,11 +103,11 @@ public class LoginFrame extends JFrame {
 			}
 
 		});
-		btnLogin.setBounds(125, 408, 200, 35);
-		btnLogin.setBackground(blue); 
-		btnLogin.setBorderPainted(false);
-		btnLogin.setOpaque(true);
-		contentPane.add(btnLogin);
+		loginButton.setBounds(125, 408, 200, 35);
+		loginButton.setBackground(blue); 
+		loginButton.setBorderPainted(false);
+		loginButton.setOpaque(true);
+		contentPane.add(loginButton);
 
 		/**
 		 * Add a MenuBar for the the Login Window with a About, Help and Exit
@@ -155,12 +155,22 @@ public class LoginFrame extends JFrame {
 		});
 
 	}
-
+	
+	/**
+	 * Close the login window and launch the login window 
+	 * @param name
+	 * @param address
+	 * @param port
+	 */
 	private void login(String name, String address, int port) {
 		dispose();
 		new ClientWindow(name, address, port);
 	}
 
+	/**
+	 * Main method to launch the login window 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {

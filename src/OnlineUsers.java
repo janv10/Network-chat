@@ -41,7 +41,7 @@ public class OnlineUsers extends JFrame {
 		JScrollPane p = new JScrollPane();
 		p.setViewportView(list);
 		contentPane.add(p, gridList);
-		list.setFont(new Font("Helvetica", 0, 14));
+		list.setFont(new Font("Helvetica", 0, 16));
 	}
 
 	public void update(String[] users) {

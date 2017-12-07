@@ -76,6 +76,9 @@ public class Client {
 		send.start();
 	}
 
+	/**
+	 * Method to terminate the socket. 
+	 */
 	public void close() {
 		new Thread() {
 			public void run() {
@@ -85,11 +88,16 @@ public class Client {
 			}
 		}.start();
 	}
-
+	
+	/**
+	 * Method to set ID 
+	 * @param ID
+	 */
 	public void setID(int ID) {
 		this.ID = ID;
 	}
 
+	
 	public int getID() {
 		return ID;
 	}

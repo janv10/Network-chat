@@ -9,6 +9,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.Socket;
 import java.util.Arrays;
 
 import javax.swing.JButton;
@@ -38,7 +39,7 @@ public class ClientWindow extends JFrame implements Runnable {
 	private boolean running = false;
 	private JMenuBar menuBar;
 	private JMenu mnFile;
-	private JMenuItem mntmOnlineUsers;
+	private JMenuItem displayOnlineUsers;
 	private JMenuItem mntmExit;
 	private OnlineUsers users;
 	
@@ -86,18 +87,19 @@ public class ClientWindow extends JFrame implements Runnable {
 		mnFile = new JMenu("File");
 		menuBar.add(mnFile);
 
-		mntmOnlineUsers = new JMenuItem("Online Users");
-		mntmOnlineUsers.addActionListener(new ActionListener() {
+		displayOnlineUsers = new JMenuItem("Online Users");
+		displayOnlineUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				users.setVisible(true);
 			}
 		});
-		mnFile.add(mntmOnlineUsers);
+		mnFile.add(displayOnlineUsers);
 
 		mntmExit = new JMenuItem("Exit");
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				running = false;
+				
 				System.exit(0);
 			}
 		});
@@ -138,15 +140,15 @@ public class ClientWindow extends JFrame implements Runnable {
 				}
 			}
 		});
-		GridBagConstraints gbc_txtMessage = new GridBagConstraints();
-		gbc_txtMessage.insets = new Insets(0, 0, 0, 5);
-		gbc_txtMessage.fill = GridBagConstraints.HORIZONTAL;
-		gbc_txtMessage.gridx = 0;
-		gbc_txtMessage.gridy = 2;
-		gbc_txtMessage.gridwidth = 2;
-		gbc_txtMessage.weightx = 1;
-		gbc_txtMessage.weighty = 0;
-		contentPane.add(txtMessage, gbc_txtMessage);
+		GridBagConstraints txtM = new GridBagConstraints();
+		txtM.insets = new Insets(0, 0, 0, 5);
+		txtM.fill = GridBagConstraints.HORIZONTAL;
+		txtM.gridx = 0;
+		txtM.gridy = 2;
+		txtM.gridwidth = 2;
+		txtM.weightx = 1;
+		txtM.weighty = 0;
+		contentPane.add(txtMessage, txtM);
 		txtMessage.setColumns(10);
 
 		JButton btnSend = new JButton("Send");
