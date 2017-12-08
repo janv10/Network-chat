@@ -1,8 +1,12 @@
+package Server;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.Random;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -33,6 +37,8 @@ public class LoginFrame extends JFrame {
 	private JLabel portLabelDesc;
 	private JMenu about;
 	private JMenuItem aboutAuthors;
+	
+	
 	
 	private Color blue  = new Color (33, 150, 243);
 
@@ -162,6 +168,7 @@ public class LoginFrame extends JFrame {
 	 * @param address
 	 * @param port
 	 */
+	
 	private void login(String name, String address, int port) {
 		dispose();
 		new ClientWindow(name, address, port);

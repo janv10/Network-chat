@@ -1,4 +1,4 @@
-package Server; 
+package Server;
 import java.net.InetAddress;
 
 public class ServerClient {

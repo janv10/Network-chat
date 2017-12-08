@@ -34,10 +34,10 @@ public class Server implements Runnable {
 	private BigInteger dec = new BigInteger("395598063902850997");
 	
 	*/
-	int BIT_LENGTH = 256;
+ int BIT_LENGTH = 2048;
 
 	// Generate random primes
-	Random rand = new SecureRandom();
+	 Random rand = new SecureRandom();
 
 	/*
 	
@@ -52,14 +52,14 @@ public class Server implements Runnable {
 
 
 	
-	private BigInteger p = new BigInteger(BIT_LENGTH / 2, 100, rand);
+	private  BigInteger p = new BigInteger(BIT_LENGTH / 2, 100, rand);
 	private BigInteger q = new BigInteger(BIT_LENGTH / 2, 100, rand);
-	private BigInteger n = p.multiply(q);
-	private BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
-	private BigInteger exp = new BigInteger("1111111111111");
-	private BigInteger one = new BigInteger("-1");
-	public BigInteger dec = exp.modPow(one, phi);
-	//decrypt = decrypt.mod(n);
+	private  BigInteger n = p.multiply(q);
+	private  BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
+	private  BigInteger exp = new BigInteger("1111111111111");
+	private  BigInteger one = new BigInteger("-1");
+	private BigInteger dec = exp.modPow(one, phi);
+	
 	
 
 	/*
@@ -109,13 +109,7 @@ cypher^d mod n
 	}
 	
 	public String RSAencryption(String sometext) {
-		/**System.out.println("p: " +  p);
-		System.out.println("q: " +  q);
-		System.out.println("n: " +  n);
 		
-		System.out.println("phi: " +  phi);
-		System.out.println("decrpty: " +  dec);
-		**/
 		System.out.println("In patricks encrpytion, string being encrypted: " + sometext);
 		int characterVal;
 	    StringBuilder newString = new StringBuilder();
@@ -306,11 +300,21 @@ cypher^d mod n
 		if (message.startsWith("/m/")) {
 			String text = message.substring(3);
 			text = text.split("/e/")[0];
+			
+			
+			
+			String newS = message;
+			System.out.println(newS);
+			newS = newS.substring(3, newS.length());
+			System.out.println(newS);
+			newS = newS.split("/e/")[0];
+			System.out.println(newS);
+			newS = RSAdecryption(newS);
+			System.out.println(newS);
+			message = "/m/"+ newS + "/e/";
 			System.out.println(message);
-			String hi = RSAencryption(text);
-			System.out.println(hi);
-			String hi2 = RSAdecryption(hi);
-			System.out.println(hi2);
+			//System.out.println("DECRYOT?" + newS);
+			//decrypt here
 			
 		}
 		for (int i = 0; i < clients.size(); i++) {
@@ -371,7 +375,19 @@ cypher^d mod n
 			send(ID, packet.getAddress(), packet.getPort());
 		} 
 		else if (string.startsWith("/m/")) {
-			sendToAll(string);
+			//int len = string.length();
+			System.out.println("In process...");
+			String newS = string;
+			System.out.println(newS);
+			newS = string.split("/e/")[0];
+			System.out.println(newS);
+			newS = newS.substring(3, newS.length());
+			System.out.println(newS);
+			newS = RSAencryption(newS);
+			System.out.println(newS);
+			newS = "/m/" + newS +"/e/";
+			
+			sendToAll(newS);
 		} 
 		else if (string.startsWith("/d/")) {
 			String id = string.split("/d/|/e/")[1];
@@ -416,5 +432,13 @@ cypher^d mod n
 		}
 		System.out.println(message);
 	}
+	
+	/*public static BigInteger getN() {
+		return n; 
+	}
+	
+	public static BigInteger getDec() {
+		return dec; 
+	}*/
 
 }

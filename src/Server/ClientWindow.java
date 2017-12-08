@@ -1,4 +1,4 @@
-
+package Server;
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -9,6 +9,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.math.BigInteger;
 import java.net.Socket;
 import java.util.Arrays;
 
@@ -22,6 +23,9 @@ import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultCaret;
+
+
+
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
@@ -94,7 +98,7 @@ public class ClientWindow extends JFrame implements Runnable {
 			}
 		});
 		mnFile.add(displayOnlineUsers);
-
+		
 		mntmExit = new JMenuItem("Exit");
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -191,11 +195,15 @@ public class ClientWindow extends JFrame implements Runnable {
 		if (text) {
 			message = client.getName() + ": " + message;
 			message = "/m/" + message + "/e/";
+			System.out.println("We here   " + message);
 			txtMessage.setText("");
 		}
 		client.send(message.getBytes());
 	}
 
+	
+	
+	
 	public void listen() {
 		listen = new Thread("Listen") {
 			public void run() {
@@ -206,6 +214,8 @@ public class ClientWindow extends JFrame implements Runnable {
 						console("Successfully connected to server! Unique Client ID: " + client.getID());
 					} else if (message.startsWith("/m/")) {
 						String text = message.substring(3);
+						//System.out.println("dec id :" + Server.getDec());
+						/////////////////////			///////////////
 						text = text.split("/e/")[0];
 						console(text);
 					} else if (message.startsWith("/i/")) {
