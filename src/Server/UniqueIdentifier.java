@@ -1,4 +1,9 @@
+/**
+ * Generate Unique Identifiers for each user client that logs on to the server 
+ */
+
 package Server;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +26,8 @@ public class UniqueIdentifier {
 	}
 
 	public static int getIdentifier() {
-		if (index > ids.size() - 1) index = 0;
+		if (index > ids.size() - 1)
+			index = 0;
 		return ids.get(index++);
 	}
 

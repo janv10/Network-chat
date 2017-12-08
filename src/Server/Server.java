@@ -1,3 +1,7 @@
+/**
+ * Implements Server side of receiving and sending
+ * Also does the RSA encryption 
+ */
 package Server;
 
 import java.io.IOException;
@@ -24,59 +28,53 @@ public class Server implements Runnable {
 	private final int MAX_ATTEMPTS = 5;
 
 	private boolean raw = false;
-	
+
 	/*
-	private BigInteger p = new BigInteger("1147714873");
-	private BigInteger q = new BigInteger("640125991");
-	private BigInteger n = p.multiply(q);
-	private BigInteger phi = new BigInteger("734682118676723280");
-	private BigInteger exp = new BigInteger("13");
-	private BigInteger dec = new BigInteger("395598063902850997");
-	
-	*/
- int BIT_LENGTH = 2048;
+	 * private BigInteger p = new BigInteger("1147714873"); private BigInteger q =
+	 * new BigInteger("640125991"); private BigInteger n = p.multiply(q); private
+	 * BigInteger phi = new BigInteger("734682118676723280"); private BigInteger exp
+	 * = new BigInteger("13"); private BigInteger dec = new
+	 * BigInteger("395598063902850997");
+	 * 
+	 */
+	int BIT_LENGTH = 4096;
 
 	// Generate random primes
-	 Random rand = new SecureRandom();
+	Random rand = new SecureRandom();
 
 	/*
-	
-	private BigInteger p = new BigInteger("61515713759448956718224427239234819678807298860503807478747734036937189372339");
-	private BigInteger q = new BigInteger("55442513974044353044574467937747871965915026620748625359014933606491729226307");
+	 * 
+	 * private BigInteger p = new BigInteger(
+	 * "61515713759448956718224427239234819678807298860503807478747734036937189372339"
+	 * ); private BigInteger q = new BigInteger(
+	 * "55442513974044353044574467937747871965915026620748625359014933606491729226307"
+	 * ); private BigInteger n = p.multiply(q); private BigInteger phi =
+	 * p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)); private
+	 * BigInteger exp = new BigInteger("1111111111111"); private BigInteger one =
+	 * new BigInteger("-1"); public BigInteger dec = exp.modPow(one, phi);
+	 */
+
+	private BigInteger p = new BigInteger(BIT_LENGTH / 2, 100, rand);
+	private BigInteger q = new BigInteger(BIT_LENGTH / 2, 100, rand);
 	private BigInteger n = p.multiply(q);
 	private BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
 	private BigInteger exp = new BigInteger("1111111111111");
 	private BigInteger one = new BigInteger("-1");
-	public BigInteger dec = exp.modPow(one, phi);
-	*/
-
-
-	
-	private  BigInteger p = new BigInteger(BIT_LENGTH / 2, 100, rand);
-	private BigInteger q = new BigInteger(BIT_LENGTH / 2, 100, rand);
-	private  BigInteger n = p.multiply(q);
-	private  BigInteger phi = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
-	private  BigInteger exp = new BigInteger("1111111111111");
-	private  BigInteger one = new BigInteger("-1");
 	private BigInteger dec = exp.modPow(one, phi);
-	
-	
 
 	/*
-	 hello
-104 101 108 108 111
-messageAscii ^ e mod n -> cypher
-104101108108111^13 mod 734682120464564143 = 327853684713202128
-
-327853684713202128 ----cypher message
-
-To decipher
-
-cypher^d mod n
-
-327853684713202128^395598063902850997 mod 734682120464564143
-
-=104 101 108 108 111
+	 * hello 104 101 108 108 111 messageAscii ^ e mod n -> cypher 104101108108111^13
+	 * mod 734682120464564143 = 327853684713202128
+	 * 
+	 * 327853684713202128 ----cypher message
+	 * 
+	 * To decipher
+	 * 
+	 * cypher^d mod n
+	 * 
+	 * 327853684713202128^395598063902850997 mod 734682120464564143
+	 * 
+	 * =104 101 108 108 111
 	 */
 	public String RSAdecryption(String sometext) {
 		BigInteger solveMe = new BigInteger(sometext);
@@ -90,14 +88,14 @@ cypher^d mod n
 		int character;
 		int aChar;
 		char print;
- 		for (int i = 0; i+2 < stringLength; i+=3) {
+		for (int i = 0; i + 2 < stringLength; i += 3) {
 			a = answer.charAt(i);
-			b = answer.charAt(i+1);
-			c = answer.charAt(i+2);
+			b = answer.charAt(i + 1);
+			c = answer.charAt(i + 2);
 			A = Character.getNumericValue(a);
 			B = Character.getNumericValue(b);
 			C = Character.getNumericValue(c);
-			character = C + (10*B) + (100*A);
+			character = C + (10 * B) + (100 * A);
 			character -= 100;
 			print = (char) character;
 			System.out.println(print);
@@ -107,28 +105,28 @@ cypher^d mod n
 		System.out.println("Final answer:" + finalSolution);
 		return finalSolution;
 	}
-	
+
 	public String RSAencryption(String sometext) {
-		
+		System.out.println(p);
 		System.out.println("In patricks encrpytion, string being encrypted: " + sometext);
 		int characterVal;
-	    StringBuilder newString = new StringBuilder();
-	    for (char c : sometext.toCharArray()) {
-	    	characterVal = (int) c;
-	    	characterVal += 100;
-	    	if (characterVal != 100) {
-	    		newString.append(characterVal);
-	    	}
-	    }
-	    BigInteger message = new BigInteger(newString.toString());
-	    System.out.println("Encrpyted message is: " + message);
-		BigInteger raised = message.modPow(exp,n);
+		StringBuilder newString = new StringBuilder();
+		for (char c : sometext.toCharArray()) {
+			characterVal = (int) c;
+			characterVal += 100;
+			if (characterVal != 100) {
+				newString.append(characterVal);
+			}
+		}
+		BigInteger message = new BigInteger(newString.toString());
+		System.out.println("Encrpyted message is: " + message);
+		BigInteger raised = message.modPow(exp, n);
 		System.out.println("Encrpyted message is: " + raised);
 		String ret = raised.toString();
 		System.out.println("Encrpyted message is in string is: " + ret);
 		return ret;
 	}
-	
+
 	public Server(int port) {
 		this.port = port;
 		try {
@@ -290,32 +288,26 @@ cypher^d mod n
 	}
 
 	/**
-	 * If the string starts with an ("/m/") its a message, that must be sent to all connections
-	 * cut out the "/m/" part, mark it with "/e/" and print out the message on to the console 
+	 * If the string starts with an ("/m/") its a message, that must be sent to all
+	 * connections cut out the "/m/" part, mark it with "/e/" and print out the
+	 * message on to the console
 	 * 
-	 * Get the list of all the active client list and send the message to their respective address and port 
-	 * @param message - message being sent 
+	 * Get the list of all the active client list and send the message to their
+	 * respective address and port
+	 * 
+	 * @param message
+	 *            - message being sent
 	 */
 	private void sendToAll(String message) {
 		if (message.startsWith("/m/")) {
 			String text = message.substring(3);
 			text = text.split("/e/")[0];
-			
-			
-			
 			String newS = message;
-			System.out.println(newS);
 			newS = newS.substring(3, newS.length());
-			System.out.println(newS);
 			newS = newS.split("/e/")[0];
-			System.out.println(newS);
 			newS = RSAdecryption(newS);
-			System.out.println(newS);
-			message = "/m/"+ newS + "/e/";
-			System.out.println(message);
-			//System.out.println("DECRYOT?" + newS);
-			//decrypt here
-			
+			message = "/m/" + newS + "/e/";
+
 		}
 		for (int i = 0; i < clients.size(); i++) {
 			ServerClient client = clients.get(i);
@@ -324,11 +316,15 @@ cypher^d mod n
 	}
 
 	/**
-	 * Create a thread to prep the message (data) received to be sent to other 
-	 * start the sending method 
-	 * @param data - byte of message received
-	 * @param address- where its going 
-	 * @param port - what its going on 
+	 * Create a thread to prep the message (data) received to be sent to other start
+	 * the sending method
+	 * 
+	 * @param data
+	 *            - byte of message received
+	 * @param address-
+	 *            where its going
+	 * @param port
+	 *            - what its going on
 	 */
 	private void send(final byte[] data, final InetAddress address, final int port) {
 		send = new Thread("Send") {
@@ -345,8 +341,9 @@ cypher^d mod n
 	}
 
 	/**
-	 * Send method helper - take in the message and send it back with it's string converted to bytes 
-	 * mark it with "/e/"
+	 * Send method helper - take in the message and send it back with it's string
+	 * converted to bytes mark it with "/e/"
+	 * 
 	 * @param message
 	 * @param address
 	 * @param port
@@ -357,8 +354,9 @@ cypher^d mod n
 	}
 
 	/**
-	 * For each connected client generate a unique identifier. This program connects up to 10,000 clients
-	 * After which, the unique clients ID's start to repeat. Can be changed in class UniqueIdentifier.
+	 * For each connected client generate a unique identifier. This program connects
+	 * up to 10,000 clients After which, the unique clients ID's start to repeat.
+	 * Can be changed in class UniqueIdentifier.
 	 * 
 	 * @param packet
 	 */
@@ -373,9 +371,8 @@ cypher^d mod n
 			clients.add(new ServerClient(name, packet.getAddress(), packet.getPort(), id));
 			String ID = "/c/" + id;
 			send(ID, packet.getAddress(), packet.getPort());
-		} 
-		else if (string.startsWith("/m/")) {
-			//int len = string.length();
+		} else if (string.startsWith("/m/")) {
+			// int len = string.length();
 			System.out.println("In process...");
 			String newS = string;
 			System.out.println(newS);
@@ -385,18 +382,15 @@ cypher^d mod n
 			System.out.println(newS);
 			newS = RSAencryption(newS);
 			System.out.println(newS);
-			newS = "/m/" + newS +"/e/";
-			
+			newS = "/m/" + newS + "/e/";
+
 			sendToAll(newS);
-		} 
-		else if (string.startsWith("/d/")) {
+		} else if (string.startsWith("/d/")) {
 			String id = string.split("/d/|/e/")[1];
 			disconnect(Integer.parseInt(id), true);
-		} 
-		else if (string.startsWith("/i/")) {
+		} else if (string.startsWith("/i/")) {
 			clientResponse.add(Integer.parseInt(string.split("/i/|/e/")[1]));
-		} 
-		else {
+		} else {
 			System.out.println(string);
 		}
 	}
@@ -432,13 +426,11 @@ cypher^d mod n
 		}
 		System.out.println(message);
 	}
-	
-	/*public static BigInteger getN() {
-		return n; 
-	}
-	
-	public static BigInteger getDec() {
-		return dec; 
-	}*/
+
+	/*
+	 * public static BigInteger getN() { return n; }
+	 * 
+	 * public static BigInteger getDec() { return dec; }
+	 */
 
 }

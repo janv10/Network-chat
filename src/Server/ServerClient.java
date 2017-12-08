@@ -1,4 +1,8 @@
+/**
+ * Takes in values from the login screen and gives them its proper type 
+ */
 package Server;
+
 import java.net.InetAddress;
 
 public class ServerClient {
@@ -15,7 +19,7 @@ public class ServerClient {
 		this.port = port;
 		this.ID = ID;
 	}
-	
+
 	public int getID() {
 		return ID;
 	}

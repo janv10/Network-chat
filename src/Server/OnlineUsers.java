@@ -1,4 +1,8 @@
+/**
+ * Displays the current online users. Constantly updating automatically
+ */
 package Server;
+
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;

@@ -1,4 +1,9 @@
+/**
+ * Handles the GUI implementation of the Client Frame Window 
+ */
+
 package Server;
+
 import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -24,11 +29,10 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.text.DefaultCaret;
 
-
-
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 public class ClientWindow extends JFrame implements Runnable {
 	private static final long serialVersionUID = 1L;
@@ -46,27 +50,30 @@ public class ClientWindow extends JFrame implements Runnable {
 	private JMenuItem displayOnlineUsers;
 	private JMenuItem mntmExit;
 	private OnlineUsers users;
-	
-	private Color blue  = new Color (33, 150, 243);
 
+	private Color blue = new Color(33, 150, 243);
+	private JMenu mnAbout;
+	private JMenuItem aboutAuthorsMenuItem;
+	private JMenu helpMenu;
+	private JMenuItem howToChatMenuItem;
 
-	public ClientWindow(String name, String address, int port) {
-		
-		client = new Client(name, address, port);
+	public ClientWindow(String name, String address, int port, BigInteger p, BigInteger q) {
+
+		client = new Client(name, address, port, p, q);
 		boolean connect = client.openConnection(address);
-		
-		//If system fails to connect - print an error message 
+
+		// If system fails to connect - print an error message
 		if (!connect) {
 			System.err.println("Connection failed!");
 			console("Connection failed!");
 		}
 		createWindow();
-		
+
 		console("Attempting a connection to address: " + address + " Port Number: " + port + ", User: " + name);
-		
-		//Display name of the current user on their chat window 
+
+		// Display name of the current user on their chat window
 		setTitle("Chat Window - " + name);
-		
+
 		String connection = "/c/" + name + "/e/";
 		client.send(connection.getBytes());
 		users = new OnlineUsers();
@@ -82,7 +89,7 @@ public class ClientWindow extends JFrame implements Runnable {
 			e1.printStackTrace();
 		}
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(880, 550);
+		setSize(1000, 800);
 		setLocationRelativeTo(null);
 
 		menuBar = new JMenuBar();
@@ -98,18 +105,43 @@ public class ClientWindow extends JFrame implements Runnable {
 			}
 		});
 		mnFile.add(displayOnlineUsers);
-		
+
 		mntmExit = new JMenuItem("Exit");
 		mntmExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				running = false;
-				
+
 				System.exit(0);
 			}
 		});
 		mnFile.add(mntmExit);
-		
-		
+
+		mnAbout = new JMenu("About");
+		menuBar.add(mnAbout);
+
+		aboutAuthorsMenuItem = new JMenuItem("About Authors");
+		aboutAuthorsMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null,
+						"Authors of Networked Chat:\nJahnvi Patel (jpate201)\nPatrick O'Connell (oconne16)\nDeep Mehta (dmehta22)");
+
+			}
+		});
+		mnAbout.add(aboutAuthorsMenuItem);
+
+		helpMenu = new JMenu("Help");
+		menuBar.add(helpMenu);
+
+		howToChatMenuItem = new JMenuItem("How to Chat");
+		howToChatMenuItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JOptionPane.showMessageDialog(null,
+						"How to Chat:\nSimply type the message you wish to send into the text input box and click on the 'Send' button "
+								+ "or press 'Enter' to send the message to all the connected clients.\n\nTo view the list of online users, click on File Menu and Online Users.  ");
+			}
+		});
+		helpMenu.add(howToChatMenuItem);
+
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -161,16 +193,16 @@ public class ClientWindow extends JFrame implements Runnable {
 				send(txtMessage.getText(), true);
 			}
 		});
-		GridBagConstraints gbc_btnSend = new GridBagConstraints();
-		btnSend.setBackground(blue); 
+		GridBagConstraints sendButton = new GridBagConstraints();
+		btnSend.setBackground(blue);
 		btnSend.setBorderPainted(false);
 		btnSend.setOpaque(true);
-		gbc_btnSend.insets = new Insets(0, 0, 0, 5);
-		gbc_btnSend.gridx = 2;
-		gbc_btnSend.gridy = 2;
-		gbc_btnSend.weightx = 0;
-		gbc_btnSend.weighty = 0;
-		contentPane.add(btnSend, gbc_btnSend);
+		sendButton.insets = new Insets(0, 0, 0, 5);
+		sendButton.gridx = 2;
+		sendButton.gridy = 2;
+		sendButton.weightx = 0;
+		sendButton.weighty = 0;
+		contentPane.add(btnSend, sendButton);
 
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -186,24 +218,35 @@ public class ClientWindow extends JFrame implements Runnable {
 		txtMessage.requestFocusInWindow();
 	}
 
+	/**
+	 * Method to run listen thread
+	 */
 	public void run() {
 		listen();
 	}
 
+	/**
+	 * Method which takes in a string and boolean and adds flag /m/ and /e/ to mark
+	 * start and end of the message
+	 * 
+	 * @param message
+	 * @param text
+	 */
 	private void send(String message, boolean text) {
-		if (message.equals("")) return;
+		if (message.equals(""))
+			return;
 		if (text) {
 			message = client.getName() + ": " + message;
 			message = "/m/" + message + "/e/";
-			System.out.println("We here   " + message);
 			txtMessage.setText("");
 		}
 		client.send(message.getBytes());
 	}
 
-	
-	
-	
+	/**
+	 * Method to create listen thread, which while running receives messages from
+	 * the client. Prints unique client ID
+	 */
 	public void listen() {
 		listen = new Thread("Listen") {
 			public void run() {
@@ -214,8 +257,6 @@ public class ClientWindow extends JFrame implements Runnable {
 						console("Successfully connected to server! Unique Client ID: " + client.getID());
 					} else if (message.startsWith("/m/")) {
 						String text = message.substring(3);
-						//System.out.println("dec id :" + Server.getDec());
-						/////////////////////			///////////////
 						text = text.split("/e/")[0];
 						console(text);
 					} else if (message.startsWith("/i/")) {

@@ -1,6 +1,11 @@
+/**
+ * Client side of the sending receiving threads is done here 
+ */
+
 package Server;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -14,14 +19,17 @@ public class Client {
 
 	private String name, address;
 	private int port;
+	private BigInteger p, q;
 	private InetAddress ip;
 	private Thread send;
 	private int ID = -1;
 
-	public Client(String name, String address, int port) {
+	public Client(String name, String address, int port, BigInteger p, BigInteger q) {
 		this.name = name;
 		this.address = address;
 		this.port = port;
+		this.p = p;
+		this.q = q;
 	}
 
 	public String getName() {
@@ -34,6 +42,14 @@ public class Client {
 
 	public int getPort() {
 		return port;
+	}
+
+	public BigInteger getP() {
+		return p;
+	}
+
+	public BigInteger getQ() {
+		return q;
 	}
 
 	public boolean openConnection(String address) {
@@ -77,7 +93,7 @@ public class Client {
 	}
 
 	/**
-	 * Method to terminate the socket. 
+	 * Method to terminate the socket.
 	 */
 	public void close() {
 		new Thread() {
@@ -88,16 +104,16 @@ public class Client {
 			}
 		}.start();
 	}
-	
+
 	/**
-	 * Method to set ID 
+	 * Method to set ID
+	 * 
 	 * @param ID
 	 */
 	public void setID(int ID) {
 		this.ID = ID;
 	}
 
-	
 	public int getID() {
 		return ID;
 	}
